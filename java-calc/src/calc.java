@@ -5,7 +5,7 @@ import java.awt.event.*;
 public class Calc extends JFrame {
 	private JButton [] num = new JButton[10];
 	private JTextField result;
-	private JButton plus,sub,mul,div,equal;
+	private JButton plus,sub,mul,div,equal, cb;
 	private double resN = 0, nowN = 0;
 	private String lastOp = "=";
 	public Calc() {
@@ -37,33 +37,28 @@ public class Calc extends JFrame {
 				else
 					result.setText(String.valueOf(nowN));
 				
-			} catch (NumberFormatException ex) {
-				if(tmp=="+")
-				{
+			} catch (NumberFormatException ex) { // not numeric
+				if(tmp=="+") {
 					resN += nowN;
 					nowN = 0;
 					lastOp = "+";
-				}
-				else if(tmp=="-")
-				{
+				} else if(tmp=="-") {
 					resN -= nowN;
 					nowN = 0;
 					lastOp = "-";
-				}
-				else if(tmp=="X")
-				{
-					resN *= nowN;
-					nowN = 0;
+				} else if(tmp=="X") {
+					if(resN==0) {
+						resN = nowN;
+						nowN = 0;
+					}
 					lastOp = "X";
-				}
-				else if(tmp=="/")
-				{
-					resN = nowN;
-					nowN = 0;
+				} else if(tmp=="/") {
+					if(resN==0) {
+						resN = nowN;
+						nowN = 0;
+					}
 					lastOp = "/";
-				}
-				else if(tmp=="=")
-				{
+				} else if(tmp=="=") {
 					switch(lastOp) {
 					case "+":
 						resN += nowN;
@@ -79,6 +74,10 @@ public class Calc extends JFrame {
 						break;
 					}
 					nowN = 0;
+				} else if (tmp=="C") {
+					resN = 0;
+					nowN = 0;
+					lastOp = "=";
 				}
 				System.out.println(resN + "/" + nowN);
 				if(isInt(resN))
@@ -148,6 +147,12 @@ public class Calc extends JFrame {
 		num[0].setLocation(70,220);
 		c.add(num[0]);
 		
+		cb = new JButton("C");
+		cb.addMouseListener(new MyMouseAdapter());
+		cb.setLocation(130,220);
+		cb.setSize(50,50);
+		c.add(cb);
+		
 		plus = new JButton("+");
 		sub = new JButton("-");
 		mul = new JButton("X");
@@ -178,6 +183,8 @@ public class Calc extends JFrame {
 		equal.setSize(110,50);
 		equal.addMouseListener(new MyMouseAdapter());
 		c.add(equal);
+		
+		
 	}
 	
 	public boolean isInt(Double n) {
